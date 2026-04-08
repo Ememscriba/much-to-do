@@ -8,7 +8,6 @@ All infrastructure runs on AWS us-east-1.
 - Infrastructure: https://github.com/Ememscriba/starttech-infra
 
 ## AWS Details
-- Account ID: 954692413962
 - Region: us-east-1
 - Load Balancer: starttech-alb-986580528.us-east-1.elb.amazonaws.com
 - S3 Bucket: starttech-frontend-f466916d
