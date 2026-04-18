@@ -12,8 +12,8 @@ This screenshot shows the Mongo Express web interface accessible at `http://loca
 **How it was achieved:**
 MongoDB was configured in `docker-compose.yml` with a replica set (`rs0`) and keyfile-based authentication. Mongo Express was connected to MongoDB using the internal Docker network via the connection string `mongodb://muchtodousr:Password!234@mongodb:27017/?authSource=admin&replicaSet=rs0&directConnection=true`.
 
-![Mongo Express Dashboard](<img width="1328" height="421" alt="Screenshot from 2026-04-17 09-08-52" src="https://github.com/user-attachments/assets/6e0ae8f9-a5b3-4648-9b8e-c55c851989f0" />
-)
+![Mongo Express Dashboard] <img width="1328" height="421" alt="Screenshot from 2026-04-17 09-08-52" src="https://github.com/user-attachments/assets/bcd6b280-769a-4cc5-bdf0-edb8df75e4ab" />
+
 
 ---
 
@@ -33,8 +33,8 @@ This confirms that MongoDB is not just running but actively serving requests fro
 **How it was achieved:**
 The MongoDB container was started with persistent volume storage (`mongo_data`) ensuring data survives container restarts. The replica set was automatically initialized via the healthcheck command in `docker-compose.yml`. A dedicated keyfile (`mongodb.key`) was generated using OpenSSL for replica set security.
 
-![MongoDB Server Status](<img width="1337" height="514" alt="Screenshot from 2026-04-17 09-09-21" src="https://github.com/user-attachments/assets/0dadb9f4-87d5-4a68-91e8-00317ba83071" />
-)
+![MongoDB Server Status](<img <img width="1337" height="514" alt="Screenshot from 2026-04-17 09-09-21" src="https://github.com/user-attachments/assets/a43f14c3-72b1-4d60-b34d-c85972297a3a" />
+
 
 ---
 
@@ -51,9 +51,8 @@ This is the most critical piece of evidence for a successful Docker deployment, 
 **How it was achieved:**
 The backend container was built using a multi-stage Dockerfile. Stage 1 used `golang:1.25.1-alpine` to compile the binary with `CGO_ENABLED=0` for a statically linked binary. Stage 2 used `alpine:3.19` with a non-root user (`appuser`) for security. A `docker-entrypoint.sh` script generates a `.env` file at container startup from environment variables, allowing the Golang application to read its configuration via the Viper library.
 
-![Backend Health Check via Docker](<img width="1337" height="625" alt="Screenshot from 2026-04-17 20-25-40" src="https://github.com/user-attachments/assets/07569173-edf2-4160-b4d4-bbc146984092" />
+![Backend Health Check via Docker] <img width="1337" height="147" alt="Screenshot from 2026-04-17 09-10-06" src="https://github.com/user-attachments/assets/703c530a-e6aa-440f-b91f-573a31948e35" />
 
-)
 
 ---
 
@@ -85,7 +84,8 @@ This screenshot shows the terminal output of multiple `kubectl` commands run aga
 **How it was achieved:**
 A Kind cluster was created using `kind-config.yaml` with custom port mappings. The Docker image `muchtodo-backend:latest` was built locally and loaded into the Kind cluster using `kind load docker-image`. All Kubernetes manifests were organized into `kubernetes/mongodb/` and `kubernetes/backend/` directories and applied using `kubectl apply -f`. Secrets were used for sensitive data (MongoDB credentials, JWT key) and ConfigMaps for non-sensitive configuration.
 
-![Kubernetes Deployment Evidence]()
+![Kubernetes Deployment Evidence] <img width="1336" height="341" alt="Screenshot from 2026-04-18 00-52-12" src="https://github.com/user-attachments/assets/367f093e-9db3-44ed-84c0-e77fb2303502" />
+
 
 ---
 
@@ -112,7 +112,8 @@ The **(healthy)** status next to each container confirms all Docker healthchecks
 **How it was achieved:**
 All services were orchestrated using `docker-compose.yml` with proper dependency ordering using `depends_on` with `condition: service_healthy`, ensuring MongoDB was fully initialized and healthy before the backend attempted to connect. Redis was configured with append-only file persistence (`--appendonly yes`) for data durability across restarts.
 
-![All Services Running](./screenshots/Screenshot_from_2026-04-18_00-52-36.png)
+![All Services Running] <img width="1357" height="612" alt="Screenshot from 2026-04-18 00-52-36" src="https://github.com/user-attachments/assets/b5eb47ae-56dd-4dea-b017-9c78d91cd88b" />
+
 
 ---
 
