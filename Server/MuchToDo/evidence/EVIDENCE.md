@@ -12,7 +12,8 @@ This screenshot shows the Mongo Express web interface accessible at `http://loca
 **How it was achieved:**
 MongoDB was configured in `docker-compose.yml` with a replica set (`rs0`) and keyfile-based authentication. Mongo Express was connected to MongoDB using the internal Docker network via the connection string `mongodb://muchtodousr:Password!234@mongodb:27017/?authSource=admin&replicaSet=rs0&directConnection=true`.
 
-![Mongo Express Dashboard](./screenshots/Screenshot_from_2026-04-17_09-08-52.png)
+![Mongo Express Dashboard](<img width="1328" height="421" alt="Screenshot from 2026-04-17 09-08-52" src="https://github.com/user-attachments/assets/6e0ae8f9-a5b3-4648-9b8e-c55c851989f0" />
+)
 
 ---
 
@@ -32,7 +33,8 @@ This confirms that MongoDB is not just running but actively serving requests fro
 **How it was achieved:**
 The MongoDB container was started with persistent volume storage (`mongo_data`) ensuring data survives container restarts. The replica set was automatically initialized via the healthcheck command in `docker-compose.yml`. A dedicated keyfile (`mongodb.key`) was generated using OpenSSL for replica set security.
 
-![MongoDB Server Status](./screenshots/Screenshot_from_2026-04-17_09-09-21.png)
+![MongoDB Server Status](<img width="1337" height="514" alt="Screenshot from 2026-04-17 09-09-21" src="https://github.com/user-attachments/assets/0dadb9f4-87d5-4a68-91e8-00317ba83071" />
+)
 
 ---
 
@@ -49,7 +51,9 @@ This is the most critical piece of evidence for a successful Docker deployment, 
 **How it was achieved:**
 The backend container was built using a multi-stage Dockerfile. Stage 1 used `golang:1.25.1-alpine` to compile the binary with `CGO_ENABLED=0` for a statically linked binary. Stage 2 used `alpine:3.19` with a non-root user (`appuser`) for security. A `docker-entrypoint.sh` script generates a `.env` file at container startup from environment variables, allowing the Golang application to read its configuration via the Viper library.
 
-![Backend Health Check via Docker](./screenshots/Screenshot_from_2026-04-17_09-10-06.png)
+![Backend Health Check via Docker](<img width="1337" height="625" alt="Screenshot from 2026-04-17 20-25-40" src="https://github.com/user-attachments/assets/07569173-edf2-4160-b4d4-bbc146984092" />
+
+)
 
 ---
 
@@ -81,7 +85,7 @@ This screenshot shows the terminal output of multiple `kubectl` commands run aga
 **How it was achieved:**
 A Kind cluster was created using `kind-config.yaml` with custom port mappings. The Docker image `muchtodo-backend:latest` was built locally and loaded into the Kind cluster using `kind load docker-image`. All Kubernetes manifests were organized into `kubernetes/mongodb/` and `kubernetes/backend/` directories and applied using `kubectl apply -f`. Secrets were used for sensitive data (MongoDB credentials, JWT key) and ConfigMaps for non-sensitive configuration.
 
-![Kubernetes Deployment Evidence](./screenshots/Screenshot_from_2026-04-18_00-52-12.png)
+![Kubernetes Deployment Evidence]()
 
 ---
 
