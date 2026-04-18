@@ -1,0 +1,124 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-muchtodousr}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-Password!234}
+      MONGO_INITDB_DATABASE: ${DB_NAME:-much_todo_db}
+    command:
+      [
+        "--replSet",
+        "rs0",
+        "--bind_ip_all",
+        "--keyFile",
+        "/data/keyfile/mongodb.key",
+      ]
+    volumes:
+      - mongo_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./mongodb.key:/data/keyfile/mongodb.key:ro
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}) }" | mongosh --port 27017 -u ${MONGO_INITDB_ROOT_USERNAME:-muchtodousr} -p ${MONGO_INITDB_ROOT_PASSWORD:-Password!234} --authenticationDatabase admin --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: mongo-express
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME:-muchtodousr}:${MONGO_INITDB_ROOT_PASSWORD:-Password!234}@mongodb:27017/?authSource=admin&replicaSet=rs0&directConnection=true
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD:-admin123}
+    networks:
+      - backend
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    restart: unless-stopped
+    depends_on:
+      - redis
+    ports:
+      - "8082:8081"
+    environment:
+      - REDIS_HOSTS=local:${REDIS_HOST:-redis}:${REDIS_PORT:-6379}
+    networks:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: muchtodo-backend
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      PORT: ${PORT:-8080}
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME:-muchtodousr}:${MONGO_INITDB_ROOT_PASSWORD:-Password!234}@mongodb:27017/${DB_NAME:-much_todo_db}?authSource=admin&replicaSet=rs0&directConnection=true
+      DB_NAME: ${DB_NAME:-much_todo_db}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-your-super-secret-key-that-is-long-and-random}
+      JWT_EXPIRATION_HOURS: ${JWT_EXPIRATION_HOURS:-72}
+      ENABLE_CACHE: ${ENABLE_CACHE:-true}
+      REDIS_ADDR: ${REDIS_HOST:-redis}:${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LOG_FORMAT: ${LOG_FORMAT:-json}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000}
+      COOKIE_DOMAINS: ${COOKIE_DOMAINS:-localhost}
+      SECURE_COOKIE: ${SECURE_COOKIE:-false}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - backend
+
+volumes:
+  mongo_data:
+  mongodb_config:
+  redis_data:
+
+networks:
+  backend:
+    driver: bridge

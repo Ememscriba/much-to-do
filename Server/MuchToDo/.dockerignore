@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# Binaries
+bin/
+*.exe
+*.out
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Test files
+*_test.go
+*.test
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Kubernetes
+kubernetes/
+
+# Scripts
+scripts/
+
+# Docs (regenerated at build time)
+docs/
+
+# Misc
+*.md
+.cursor/
+.vscode/
+evidence/
