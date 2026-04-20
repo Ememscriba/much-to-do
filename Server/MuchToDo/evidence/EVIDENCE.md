@@ -12,7 +12,8 @@ This screenshot shows the Mongo Express web interface accessible at `http://loca
 **How it was achieved:**
 MongoDB was configured in `docker-compose.yml` with a replica set (`rs0`) and keyfile-based authentication. Mongo Express was connected to MongoDB using the internal Docker network via the connection string `mongodb://muchtodousr:Password!234@mongodb:27017/?authSource=admin&replicaSet=rs0&directConnection=true`.
 
-![Mongo Express Dashboard](./screenshots/Screenshot_from_2026-04-17_09-08-52.png)
+![Mongo Express Dashboard] <img width="1337" height="514" alt="Screenshot from 2026-04-17 09-09-21" src="https://github.com/user-attachments/assets/38f49187-77ff-4a42-aaae-8dbf73a66242" />
+
 
 ---
 
