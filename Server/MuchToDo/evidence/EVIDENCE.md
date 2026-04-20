@@ -81,7 +81,7 @@ This screenshot shows the terminal output of multiple `kubectl` commands run aga
 **How it was achieved:**
 A Kind cluster was created using `kind-config.yaml` with custom port mappings. The Docker image `muchtodo-backend:latest` was built locally and loaded into the Kind cluster using `kind load docker-image`. All Kubernetes manifests were organized into `kubernetes/mongodb/` and `kubernetes/backend/` directories and applied using `kubectl apply -f`. Secrets were used for sensitive data (MongoDB credentials, JWT key) and ConfigMaps for non-sensitive configuration.
 
-![Kubernetes Deployment Evidence] <img width="1337" height="625" alt="Screenshot from 2026-04-17 20-25-40" src="https://github.com/user-attachments/assets/ccdf2434-a88e-4582-a9fd-f5de4b5490c6" />
+![Kubernetes Deployment Evidence] <img width="1336" height="341" alt="Screenshot from 2026-04-18 00-52-12" src="https://github.com/user-attachments/assets/55bd784f-12e0-4060-afa7-1d29cf6b8e8d" />
 
 ---
 
@@ -108,7 +108,7 @@ The **(healthy)** status next to each container confirms all Docker healthchecks
 **How it was achieved:**
 All services were orchestrated using `docker-compose.yml` with proper dependency ordering using `depends_on` with `condition: service_healthy`, ensuring MongoDB was fully initialized and healthy before the backend attempted to connect. Redis was configured with append-only file persistence (`--appendonly yes`) for data durability across restarts.
 
-![All Services Running] <img width="1336" height="341" alt="Screenshot from 2026-04-18 00-52-12" src="https://github.com/user-attachments/assets/dfa8319a-5b01-4d0d-8c72-01e95520b2fc" />
+![All Services Running]
 <img width="1357" height="612" alt="Screenshot from 2026-04-18 00-52-36" src="https://github.com/user-attachments/assets/fbf016e9-49e5-4e81-b922-64208a5f6aa4" />
 
 
